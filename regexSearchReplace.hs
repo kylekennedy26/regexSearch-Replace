@@ -14,12 +14,14 @@ main = do
     putStrLn "Welcome to RegEx Search and Replace. Enter a filename:"
     filename <- getLine
     putStrLn "Enter the string you want to find/match:"
-    matchString <- getLine
+    matchStr <- getLine
     putStrLn "Enter the string you want to replace the found string with:"
-    replaceString <- getLine
-    --validate input? can we do this on one line?
-    -- validateInput userInput
+    replaceStr <- getLine
+    --i only did this in 3 lines because idk how else to do it in haskell.
     fileContents <- readFile filename
+    writeFile filename (runProgram fileContents matchStr replaceStr)
+    putStrLn "Search and replace completed, file has been updated..."
+
 
 
 validateInput :: String -> String -> String -> String
