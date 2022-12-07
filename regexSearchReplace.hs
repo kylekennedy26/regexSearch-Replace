@@ -5,6 +5,7 @@ import Data.List
 
 data Regex = Letter Char | Concat Regex Regex | Choice Regex Regex |
              Lambda | Empty | Star Regex
+    deriving(Show, Eq)
 
 --choice  -> https://chortle.ccsu.edu/finiteautomata/Section07/sect07_7.html
 
@@ -23,6 +24,8 @@ main = do
     writeFile filename (runner fileContents matchStr replaceStr)
     putStrLn ("Sucessfully replaced " ++ matchStr ++ " with " ++ replaceStr ++ " in " ++ filename)
 
+--raw input? literal words (strings), spaces, \n?, 
+--data Token = 
 --the types below are placeholder and not correct i think
 
 lexer :: String -> [Regex]
@@ -32,7 +35,7 @@ lexer "" = []
 --concat
 
 --choice
-lexer ('[' : x : y : ']' : s) = Choice x y  : lexer s
+--lexer ('[' : x : y : ']' : s) = Choice x y  : lexer s
 --Lamba
 
 --empty
@@ -51,7 +54,7 @@ sr x y = error "not implemented"
 runner :: String -> String -> String -> String
 runner file matchStr replaceStr = error "not implemented"
 
-search :: String -> String
+search :: String -> Regex -> Bool
 search x = error "not implemented"
 
 replace :: String -> String
