@@ -25,15 +25,6 @@ main = do
 
 --the types below are placeholder and not correct i think
 
-runner :: String -> String -> String -> String
-runner file matchStr replaceStr = error "not implemented"
-
-search :: String -> String
-search x = error "not implemented"
-
-replace :: String -> String
-replace x = error "not implemented"
-
 lexer :: String -> [Regex]
 lexer "" = []
 --letter
@@ -56,3 +47,12 @@ parser x = error "not implemented"
 
 sr :: [Regex] -> [Regex] -> [Regex]
 sr x y = error "not implemented"
+
+runner :: String -> String -> String -> String
+runner file matchStr replaceStr = error "not implemented"
+
+search :: String -> String
+search x = error "not implemented"
+
+replace :: String -> String
+replace x = error "not implemented"
