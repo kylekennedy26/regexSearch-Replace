@@ -34,11 +34,11 @@ match (Concat r1 r2) st = or [match r1 s1 && match r2 s2 | (s1, s2)<- splitStrin
 match (Star r) st = match Empty st || or [match r s1 && match (Star r) s2 | (s1, s2) <- frontSplit st]
 
 splitString :: [a] -> [([a], [a])]
-splitString str = [ splitAt n st | n <- [0 .. length str] ]
+splitString str = [ splitAt n str | n <- [0 .. length str] ]
 
 --frontSplit is the same as Split, but it excludes the split ([], str)
 frontSplit :: [a] -> [([a], [a])]
-frontSplit str = [splitAt n str | n <- [0 .. length str]]
+frontSplit str = [splitAt n str | n <- [1 .. length str]]
 
 runner :: String -> String -> String -> String
 runner file matchStr replaceStr = error "not implemented"
