@@ -1,11 +1,10 @@
 module FinalProj where
-
 import Data.Char
 import Data.List
 
 data Regex = Letter Char | Concat Regex Regex | Choice Regex Regex |
              Lambda | Empty | Star Regex
-    deriving(Show, Eq)
+    deriving(Show,Eq)
 
 --choice  -> https://chortle.ccsu.edu/finiteautomata/Section07/sect07_7.html
 
@@ -27,29 +26,19 @@ main = do
 --raw input? literal words (strings), spaces, \n?, 
 --data Token = 
 --the types below are placeholder and not correct i think
+match :: Regex -> String -> Bool
+match Empty st = st == ""
+match (Letter ch) st = st == [ch]
+match (Choice r1 r2) st = match r1 st || match r2 st
+match (Concat r1 r2) st = or [match r1 s1 && match r2 s2 | (s1, s2)<- splitString st]
+match (Star r) st = match Empty st || or [match r s1 && match (Star r) s2 | (s1, s2) <- frontSplit st]
 
-lexer :: String -> [Regex]
-lexer "" = []
---letter
+splitString :: [a] -> [([a], [a])]
+splitString str = [ splitAt n st | n <- [0 .. length str] ]
 
---concat
-
---choice
---lexer ('[' : x : y : ']' : s) = Choice x y  : lexer s
---Lamba
-
---empty
-
---star
-
-lexer (c: s) | isSpace c = lexer s
-lexer s = error ("Lexical error: " ++ s)
-
-parser :: [Regex] -> String
-parser x = error "not implemented"
-
-sr :: [Regex] -> [Regex] -> [Regex]
-sr x y = error "not implemented"
+--frontSplit is the same as Split, but it excludes the split ([], str)
+frontSplit :: [a] -> [([a], [a])]
+frontSplit str = [splitAt n str | n <- [0 .. length str]]
 
 runner :: String -> String -> String -> String
 runner file matchStr replaceStr = error "not implemented"
