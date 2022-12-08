@@ -21,10 +21,6 @@ main = do
     writeFile filename (runProgram fileContents matchStr replaceStr)
     putStrLn ("Sucessfully replaced " ++ matchStr ++ " with " ++ replaceStr ++ " in " ++ filename)
 
-data Regex = Letter Char | Concat Regex Regex | Choice Regex Regex |
-             Lambda | Empty | Star Regex
-    deriving(Show,Eq)
-
 --do we need to pattern match for lambda here?
 match :: Regex -> String -> Bool
 match Empty st = st == ""
