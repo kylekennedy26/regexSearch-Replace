@@ -37,6 +37,7 @@ splitString str = [ splitAt n str | n <- [0 .. length str] ]
 frontSplit :: [a] -> [([a], [a])]
 frontSplit str = [splitAt n str | n <- [1 .. length str]]
 
+matchPrefix :: Regex -> [Char] -> [String]
 matchPrefix Empty str = []
 matchPrefix Lambda str = [""]
 matchPrefix (Letter ch) (strChar:rst) = [rst | ch == strChar]
