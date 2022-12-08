@@ -6,7 +6,6 @@ data Regex = Letter Char | Concat Regex Regex | Choice Regex Regex |
              Lambda | Empty | Star Regex
     deriving(Show,Eq)
 
---choice  -> https://chortle.ccsu.edu/finiteautomata/Section07/sect07_7.html
 
 main :: IO ()
 main = do
@@ -46,12 +45,3 @@ matchPrefix :: Regex -> String -> [String]
 --use recursion.
 matchPrefix Empty st = st == [""]
 matchPrefix
-
-runner :: String -> String -> String -> String
-runner file matchStr replaceStr = error "not implemented"
-
-search :: String -> Regex -> Bool
-search x = error "not implemented"
-
-replace :: String -> String
-replace x = error "not implemented"
