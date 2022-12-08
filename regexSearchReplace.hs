@@ -23,9 +23,7 @@ main = do
     writeFile filename (runner fileContents matchStr replaceStr)
     putStrLn ("Sucessfully replaced " ++ matchStr ++ " with " ++ replaceStr ++ " in " ++ filename)
 
---raw input? literal words (strings), spaces, \n?, 
---data Token = 
---the types below are placeholder and not correct i think
+--do we need to pattern match for lambda here?
 match :: Regex -> String -> Bool
 match Empty st = st == ""
 match (Letter ch) st = st == [ch]
@@ -44,8 +42,8 @@ matchPrefix :: Regex -> String -> [String]
 --this function checks whether a prefix of a string can be matched, 
 --and returns a list of strings that would remain, for every possible match of the input string.
 --use recursion.
-matchPrefix Empty st = st == [""]
-matchPrefix
+matchPrefix Empty st = st == []
+matchPrefix Lambda st = st == [""]
 
 runner :: String -> String -> String -> String
 runner file matchStr replaceStr = error "not implemented"
