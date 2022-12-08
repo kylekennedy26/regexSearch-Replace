@@ -44,8 +44,10 @@ matchPrefix :: Regex -> String -> [String]
 matchPrefix Empty st = st == []
 matchPrefix Lambda st = st == [""]
 
-runner :: String -> String -> String -> String
-runner file matchStr replaceStr = error "not implemented"
+runProgram :: String -> String -> String -> String
+--takes as input 2 strings, and a string representing the filecontents as 1 huge string.
+--do we need to run words on it to make it a list of strings?
+runProgram file matchStr replaceStr = error "not implemented"
 
 search :: String -> Regex -> Bool
 search x = error "not implemented"
