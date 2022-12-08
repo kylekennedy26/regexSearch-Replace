@@ -2,6 +2,10 @@ module FinalProj where
 import Data.Char
 import Data.List
 
+data Regex = Letter Char | Concat Regex Regex | Choice Regex Regex |
+             Lambda | Empty | Star Regex
+    deriving(Show,Eq)
+
 main :: IO ()
 main = do
     --prompt user for input
@@ -37,9 +41,6 @@ splitString str = [ splitAt n str | n <- [0 .. length str] ]
 frontSplit :: [a] -> [([a], [a])]
 frontSplit str = [splitAt n str | n <- [1 .. length str]]
 
-matchPrefix :: Regex -> String -> [String]
---USE RECURSION. this function checks whether a prefix of a string can be matched, 
---and returns a list of strings that would remain, for every possible match of the input string.
 matchPrefix Empty str = []
 matchPrefix Lambda str = [""]
 matchPrefix (Letter ch) (strChar:rst) = [rst | ch == strChar]
