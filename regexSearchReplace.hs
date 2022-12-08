@@ -40,6 +40,13 @@ splitString str = [ splitAt n str | n <- [0 .. length str] ]
 frontSplit :: [a] -> [([a], [a])]
 frontSplit str = [splitAt n str | n <- [1 .. length str]]
 
+matchPrefix :: Regex -> String -> [String]
+--this function checks whether a prefix of a string can be matched, 
+--and returns a list of strings that would remain, for every possible match of the input string.
+--use recursion.
+matchPrefix Empty st = st == [""]
+matchPrefix
+
 runner :: String -> String -> String -> String
 runner file matchStr replaceStr = error "not implemented"
 
