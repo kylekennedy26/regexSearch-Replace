@@ -6,7 +6,6 @@ data Regex = Letter Char | Concat Regex Regex | Choice Regex Regex |
              Lambda | Empty | Star Regex
     deriving(Show,Eq)
 
-
 main :: IO ()
 main = do
     --prompt user for input
@@ -19,7 +18,7 @@ main = do
     --read file
     fileContents <- readFile filename
     --do stuff
-    writeFile filename (runner fileContents matchStr replaceStr)
+    writeFile filename (runProgram fileContents matchStr replaceStr)
     putStrLn ("Sucessfully replaced " ++ matchStr ++ " with " ++ replaceStr ++ " in " ++ filename)
 
 --raw input? literal words (strings), spaces, \n?, 
@@ -45,3 +44,12 @@ matchPrefix :: Regex -> String -> [String]
 --use recursion.
 matchPrefix Empty st = st == [""]
 matchPrefix
+
+runProgram :: String -> String -> String -> String
+runProgram file matchStr replaceStr = error "not implemented"
+
+search :: String -> Regex -> Bool
+search x = error "not implemented"
+
+replace :: String -> String
+replace x = error "not implemented"
