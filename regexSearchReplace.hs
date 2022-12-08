@@ -2,12 +2,6 @@ module FinalProj where
 import Data.Char
 import Data.List
 
-data Regex = Letter Char | Concat Regex Regex | Choice Regex Regex |
-             Lambda | Empty | Star Regex
-    deriving(Show,Eq)
-
---choice  -> https://chortle.ccsu.edu/finiteautomata/Section07/sect07_7.html
-
 main :: IO ()
 main = do
     --prompt user for input
@@ -20,13 +14,18 @@ main = do
     --read file
     fileContents <- readFile filename
     --do stuff
-    writeFile filename (runner fileContents matchStr replaceStr)
+    writeFile filename (runProgram fileContents matchStr replaceStr)
     putStrLn ("Sucessfully replaced " ++ matchStr ++ " with " ++ replaceStr ++ " in " ++ filename)
+
+data Regex = Letter Char | Concat Regex Regex | Choice Regex Regex |
+             Lambda | Empty | Star Regex
+    deriving(Show,Eq)
 
 --do we need to pattern match for lambda here?
 match :: Regex -> String -> Bool
 match Empty st = st == ""
-match (Letter ch) st = st == [ch]
+match (Letter ch) (firstChar:rst) = firstChar == ch
+match (Letter ch) [] = False
 match (Choice r1 r2) st = match r1 st || match r2 st
 match (Concat r1 r2) st = or [match r1 s1 && match r2 s2 | (s1, s2)<- splitString st]
 match (Star r) st = match Empty st || or [match r s1 && match (Star r) s2 | (s1, s2) <- frontSplit st]
@@ -39,14 +38,20 @@ frontSplit :: [a] -> [([a], [a])]
 frontSplit str = [splitAt n str | n <- [1 .. length str]]
 
 matchPrefix :: Regex -> String -> [String]
---this function checks whether a prefix of a string can be matched, 
+--USE RECURSION. this function checks whether a prefix of a string can be matched, 
 --and returns a list of strings that would remain, for every possible match of the input string.
---use recursion.
-matchPrefix Empty st = st == []
-matchPrefix Lambda st = st == [""]
+matchPrefix Empty str = []
+matchPrefix Lambda str = [""]
+matchPrefix (Letter ch) (strChar:rst) = [rst | ch == strChar]
+matchPrefix (Concat r1 r2) str = if null list then list else [head list]
+                                    where list = [tail s2 | (s1, s2) <- splitString str, match r1 s1 && match r2 s2]
+matchPrefix (Choice r1 r2) str = matchPrefix r1 str ++ matchPrefix r2 str
+--concat?
+--matchPrefix (Star r) str = 
 
-runner :: String -> String -> String -> String
-runner file matchStr replaceStr = error "not implemented"
+runProgram :: String -> String -> String -> String
+--takes as input 2 strings, and a string representing the filecontents as 1 huge string.
+runProgram file matchStr replaceStr = error "not implemented"
 
 search :: String -> Regex -> Bool
 search x = error "not implemented"
