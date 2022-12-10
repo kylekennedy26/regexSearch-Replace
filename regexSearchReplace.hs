@@ -52,8 +52,6 @@ splitThree :: [a] -> [([a], [a], [a])]
 --Repeated characters are treated as different. (Hello generates Hel twice since two ls.)
 splitThree str = [(x, y, [z]) | (x, xs) <- splitString str, (y, ys) <- frontSplit xs, z <- ys]
 
-
-
 runProgram :: String -> String -> String -> String
 --takes as input 2 strings, and a string representing the filecontents as 1 huge string.
 runProgram file matchStr replaceStr = error "not implemented"
