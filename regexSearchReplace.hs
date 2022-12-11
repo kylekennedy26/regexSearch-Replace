@@ -21,10 +21,9 @@ main = do
     writeFile filename (runProgram fileContents matchStr replaceStr)
     putStrLn ("Sucessfully replaced " ++ matchStr ++ " with " ++ replaceStr ++ " in " ++ filename)
 
---do we need to pattern match for lambda here?
 match :: Regex -> String -> Bool
 match Empty st = st == ""
-match Lambda st = True
+match Lambda st = st == "\\" --is this the right character for lambda ?
 match (Letter ch) [] = False
 match (Letter ch) (firstChar:rst) = firstChar == ch
 match (Choice r1 r2) st = match r1 st || match r2 st
@@ -39,12 +38,14 @@ frontSplit :: [a] -> [([a], [a])]
 frontSplit str = [splitAt n str | n <- [1 .. length str]]
 
 matchPrefix :: Regex -> [Char] -> [String]
-matchPrefix Empty str = []
+matchPrefix Empty str = [""] --changed this from []
 matchPrefix Lambda str = [str]
-matchPrefix (Letter ch) [] = [""]
+matchPrefix (Letter ch) [] = [] --changed this from [""]
 matchPrefix (Letter ch) (strChar:rst) = [rst | ch == strChar]
 matchPrefix (Concat r1 r2) str = [ s3 | (s1, s2, s3) <- splitThree str, match r1 s1 && match r2 s2 ]
 matchPrefix (Star r) str = matchPrefix (Choice Lambda (Concat r (Star r))) str
+--choice?
+
 
 --helper functions for match prefix
 splitThree :: [a] -> [([a], [a], [a])]
