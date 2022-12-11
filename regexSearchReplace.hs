@@ -43,10 +43,14 @@ matchPrefix Empty str = []
 matchPrefix Lambda str = [str]
 matchPrefix (Letter ch) [] = []
 matchPrefix (Letter ch) (strChar:rst) = [rst | ch == strChar]
-matchPrefix (Concat r1 r2) str = if null list then list else [head list]
-                                    where list = [tail s2 | (s1, s2) <- splitString str, match r1 s1 && match r2 s2]
-matchPrefix (Choice r1 r2) str = matchPrefix r1 str ++ matchPrefix r2 str
-matchPrefix (Star r) str = matchPrefix r str
+matchPrefix (Concat r1 r2) str = [ s3 | (s1, s2, s3) <- splitThree str, match r1 s1 && match r2 s2 ]
+matchPrefix (Star r) str = matchPrefix (Choice Lambda (Concat r (Star r))) str
+
+--helper functions for match prefix
+splitThree :: [a] -> [([a], [a], [a])]
+--generate all the possible tuples for s1 ++ s2 ++ s3 = str.
+--Repeated characters are treated as different. (Hello generates Hel twice since two ls.)
+splitThree str = [(x, y, [z]) | (x, xs) <- splitString str, (y, ys) <- frontSplit xs, z <- ys]
 
 runProgram :: String -> String -> String -> String
 --takes as input 2 strings, and a string representing the filecontents as 1 huge string.
