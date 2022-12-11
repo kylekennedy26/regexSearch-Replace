@@ -33,9 +33,10 @@ match (Star r) st = match Empty st || or [match r s1 && match (Star r) s2 | (s1,
 splitString :: [a] -> [([a], [a])]
 splitString str = [ splitAt n str | n <- [0 .. length str] ]
 
---frontSplit is the same as Split, but it excludes the split ([], str)
+--frontSplit is the same as splitString, but it excludes the split ([], str)
 frontSplit :: [a] -> [([a], [a])]
 frontSplit str = [splitAt n str | n <- [1 .. length str]]
+
 
 matchPrefix :: Regex -> [Char] -> [String]
 matchPrefix Empty str = [""] --changed this from []
@@ -46,12 +47,18 @@ matchPrefix (Concat r1 r2) str = [ s3 | (s1, s2, s3) <- splitThree str, match r1
 matchPrefix (Star r) str = matchPrefix (Choice Lambda (Concat r (Star r))) str
 --choice?
 
-
 --helper functions for match prefix
 splitThree :: [a] -> [([a], [a], [a])]
 --generate all the possible tuples for s1 ++ s2 ++ s3 = str.
 --Repeated characters are treated as different. (Hello generates Hel twice since two ls.)
-splitThree str = [(x, y, [z]) | (x, xs) <- splitString str, (y, ys) <- frontSplit xs, z <- ys]
+splitThree str = [zip3 xs ys zs | (xs, ys) <- unzip (splitString str), zs <- unzip (splitString ys)]
+
+--given 3 lists, zip them together into a list of triples.
+zip3' :: [a] -> [a] -> [a] -> [([a], [a], [a])]
+zip3' xs ys [] = []
+zip3' xs [] zs = []
+zip3' [] ys zs = []
+zip3' (x:xs) (y:ys) (z:zs) = ([x], [y], [z]) : zip3 [xs] [ys] [zs] 
 
 runProgram :: String -> String -> String -> String
 --takes as input 2 strings, and a string representing the filecontents as 1 huge string.
