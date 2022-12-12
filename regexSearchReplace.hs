@@ -23,9 +23,9 @@ main = do
 
 match :: Regex -> String -> Bool
 match Empty st = st == ""
-match Lambda st = st == "\\" --is this the right character for lambda ?
-match (Letter ch) [] = False
-match (Letter ch) (firstChar:rst) = firstChar == ch
+match Lambda st = st == ""
+match (Letter ch) [str] = str == ch
+match (Letter ch) _ = False
 match (Choice r1 r2) st = match r1 st || match r2 st
 match (Concat r1 r2) st = or [match r1 s1 && match r2 s2 | (s1, s2)<- splitString st]
 match (Star r) st = match Empty st || or [match r s1 && match (Star r) s2 | (s1, s2) <- frontSplit st]
@@ -38,13 +38,14 @@ frontSplit :: [a] -> [([a], [a])]
 frontSplit str = [splitAt n str | n <- [1 .. length str]]
 
 matchPrefix :: Regex -> [Char] -> [String]
-matchPrefix Empty str = [""] --changed this from []
+matchPrefix Empty str = []
 matchPrefix Lambda str = [str]
-matchPrefix (Letter ch) [] = [] --changed this from [""]
+matchPrefix (Letter ch) [] = []
 matchPrefix (Letter ch) (strChar:rst) = [rst | ch == strChar]
 matchPrefix (Choice r1 r2) str = matchPrefix r1 str ++ matchPrefix r2 str
 matchPrefix (Concat r1 r2) str = [ s3 | (s1, s2, s3) <- splitThree str, match r1 s1 && match r2 s2 ]
-matchPrefix (Star r) str = matchPrefix (Choice Lambda (Concat r (Star r))) str
+matchPrefix (Star r) str = [str] ++ [ s3 | (s1, s2, s3) <- splitThree str, match r s1 && match (Star r) s2]
+--matchPrefix (Star r) str = matchPrefix (Choice Lambda (Concat r (Star r))) str
 
 --helper functions for match prefix
 --generate all the possible tuples for s1 ++ s2 ++ s3 = str.
@@ -52,8 +53,8 @@ matchPrefix (Star r) str = matchPrefix (Choice Lambda (Concat r (Star r))) str
 splitThree :: [a] -> [([a], [a], [a])]
 splitThree str = [(xs, ys, zs) | (xs, rst) <- splitString str, (ys, zs) <-  splitString rst]
 
-runProgram :: String -> String -> String -> String
 --takes as input 2 strings, and a string representing the filecontents as 1 huge string.
+runProgram :: String -> String -> String -> String
 runProgram file matchStr replaceStr = error "not implemented"
 
 search :: String -> Regex -> Bool
