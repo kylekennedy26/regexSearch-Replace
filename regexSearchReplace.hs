@@ -61,7 +61,10 @@ data Token = LetterOp Char | ConcatOp | ChoiceOp | StarOp | EmptyOp | LambdaOp
             | LPar | RPar  | REG Regex
             deriving Show
 
---parser :: [Regex] -> [?]
+parser :: String -> [Regex]
+parser s = case sr [] (lexer s) of
+    [REG e] -> [e]
+    ts -> error ("Parse error: " ++ show ts) 
 
 sr :: [Token] -> [Token] -> [Token]
 --letter
@@ -82,12 +85,13 @@ sr (RPar : REG r : LPar : s) ts = sr (REG r : s) ts
 sr s (t:ts) = sr (t:s) ts
 sr s [] = s
 
+
 lexer :: String -> [Token]
 lexer "" = []
 --letter
 lexer (s : ss) | isLetter s = LetterOp s : lexer ss
 --concat
-lexer ('+':  ss) = ConcatOp : lexer ss
+lexer (';':  ss) = ConcatOp : lexer ss
 --choice
 lexer ('|': ss)   = ChoiceOp : lexer ss
 --star
