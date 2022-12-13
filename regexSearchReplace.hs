@@ -101,6 +101,8 @@ sr s [] = s
 
 lexer :: String -> [Token]
 lexer "" = []
+lexer (s : ss) | isSpace s = lexer ss
+lexer (s : ss) | s =='"' = lexer ss
 --letter
 lexer (s : ss) | isLetter s = LetterOp s : lexer ss
 --concat
@@ -109,8 +111,6 @@ lexer (';':  ss) = ConcatOp : lexer ss
 lexer ('|': ss)   = ChoiceOp : lexer ss
 --star
 lexer ('*': ss)  = StarOp : lexer ss
---empty
-lexer (' ': ss) = EmptyOp : lexer ss
 --lambda
 lexer ('\\': ss) = LambdaOp : lexer ss
 --punctuation
