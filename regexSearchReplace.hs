@@ -21,6 +21,23 @@ main = do
     writeFile filename (runProgram fileContents matchStr replaceStr)
     putStrLn ("Sucessfully replaced " ++ matchStr ++ " with " ++ replaceStr ++ " in " ++ filename)
 
+--takes as input 3 strings, and a string representing the filecontents as 1 huge string.
+--string to match, turned into a regex pattern
+--string that will replace
+runProgram :: String -> String -> String -> String
+runProgram file matchStr replaceStr = do
+    matchReg <- genPattern matchStr
+    
+search :: String -> Regex -> Bool
+search s r = error "not implemented"
+
+replace :: String -> String
+replace x = error "not implemented"
+
+genPattern :: String -> Regex
+genPattern [] = Empty
+genPattern s = parser s
+
 match :: Regex -> String -> Bool
 match Empty st = st == ""
 match Lambda st = st == ""
@@ -53,10 +70,6 @@ matchPrefix (Star r) str = [str] ++ [ s3 | (s1, s2, s3) <- splitThree str, match
 splitThree :: [a] -> [([a], [a], [a])]
 splitThree str = [(xs, ys, zs) | (xs, rst) <- splitString str, (ys, zs) <-  splitString rst]
 
---takes as input 2 strings, and a string representing the filecontents as 1 huge string.
-runProgram :: String -> String -> String -> String
-runProgram file matchStr replaceStr = error "not implemented"
-
 data Token = LetterOp Char | ConcatOp | ChoiceOp | StarOp | EmptyOp | LambdaOp 
             | LPar | RPar  | REG Regex
             deriving Show
@@ -65,7 +78,6 @@ parser :: String -> Regex
 parser s = case sr [] (lexer s) of
     [REG r] -> r
     e -> error ("Parse error: " ++ show e) 
-
 
 sr :: [Token] -> [Token] -> [Token]
 --letter
@@ -106,10 +118,3 @@ lexer ('(': ss) = LPar : lexer ss
 lexer (')': ss) = RPar : lexer ss
 --basecase
 lexer s = error("Lexical error: " ++ s)
-
-
-search :: String -> Regex -> Bool
-search x = error "not implemented"
-
-replace :: String -> String
-replace x = error "not implemented"
