@@ -18,21 +18,21 @@ main = do
     --read file
     fileContents <- readFile filename
     --do stuff
-    writeFile filename (runProgram fileContents matchStr replaceStr)
+    writeFile "output.txt" (runProgram fileContents matchStr replaceStr)
     putStrLn ("Sucessfully replaced " ++ matchStr ++ " with " ++ replaceStr ++ " in " ++ filename)
 
 --takes as input 3 strings, and a string representing the filecontents as 1 huge string.
 --string to match, turned into a regex pattern
 --string that will replace
 runProgram :: String -> String -> String -> String
-runProgram file matchStr replaceStr = do
-    matchReg <- genPattern matchStr
-    
-search :: String -> Regex -> Bool
-search s r = error "not implemented"
+runProgram file matchStr replaceStr = if search x file then replace x file replaceStr else file
+                                        where x = genPattern matchStr
 
-replace :: String -> String
-replace x = error "not implemented"
+search :: Regex -> String -> Bool
+search reg file = not (null (matchPrefix reg file))
+
+replace :: Regex -> String -> String -> String
+replace r file str = str ++ head (matchPrefix r file)
 
 genPattern :: String -> Regex
 genPattern [] = Empty
@@ -70,14 +70,14 @@ matchPrefix (Star r) str = [str] ++ [ s3 | (s1, s2, s3) <- splitThree str, match
 splitThree :: [a] -> [([a], [a], [a])]
 splitThree str = [(xs, ys, zs) | (xs, rst) <- splitString str, (ys, zs) <-  splitString rst]
 
-data Token = LetterOp Char | ConcatOp | ChoiceOp | StarOp | EmptyOp | LambdaOp 
+data Token = LetterOp Char | ConcatOp | ChoiceOp | StarOp | EmptyOp | LambdaOp
             | LPar | RPar  | REG Regex
             deriving Show
 
 parser :: String -> Regex
 parser s = case sr [] (lexer s) of
     [REG r] -> r
-    e -> error ("Parse error: " ++ show e) 
+    e -> error ("Parse error: " ++ show e)
 
 sr :: [Token] -> [Token] -> [Token]
 --letter
