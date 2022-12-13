@@ -57,6 +57,52 @@ splitThree str = [(xs, ys, zs) | (xs, rst) <- splitString str, (ys, zs) <-  spli
 runProgram :: String -> String -> String -> String
 runProgram file matchStr replaceStr = error "not implemented"
 
+data Token = LetterOp Char | ConcatOp | ChoiceOp | StarOp | EmptyOp | LambdaOp 
+            | LPar | RPar  | REG Regex
+            deriving Show
+
+--parser :: [Regex] -> [?]
+
+sr :: [Token] -> [Token] -> [Token]
+--letter
+sr (LetterOp x: s) ts = sr (REG(Letter x): s) ts
+--concat
+sr (REG r2 : ConcatOp : REG r1 : s) ts = sr (REG (Concat r1 r2) : s) ts
+--choice
+sr (REG r2 : ChoiceOp : REG r1 : s) ts = sr (REG (Choice r1 r2) : s) ts
+--star
+sr (StarOp : REG r : s) ts = sr (REG (Star r) : s) ts
+--lambda
+sr (LambdaOp : s) ts = sr (REG (Lambda) : s) ts
+--empty
+sr (EmptyOp : s) ts = sr (REG (Empty) : s) ts
+--pars
+sr (RPar : REG r : LPar : s) ts = sr (REG r : s) ts
+--basecase
+sr s (t:ts) = sr (t:s) ts
+sr s [] = s
+
+lexer :: String -> [Token]
+lexer "" = []
+--letter
+lexer (s : ss) | isLetter s = LetterOp s : lexer ss
+--concat
+lexer ('+':  ss) = ConcatOp : lexer ss
+--choice
+lexer ('|': ss)   = ChoiceOp : lexer ss
+--star
+lexer ('*': ss)  = StarOp : lexer ss
+--empty
+lexer (' ': ss) = EmptyOp : lexer ss
+--lambda
+lexer ('\\': ss) = LambdaOp : lexer ss
+--punctuation
+lexer ('(': ss) = LPar : lexer ss
+lexer (')': ss) = RPar : lexer ss
+--basecase
+lexer s = error("Lexical error: " ++ s)
+
+
 search :: String -> Regex -> Bool
 search x = error "not implemented"
 
