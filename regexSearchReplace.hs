@@ -61,10 +61,11 @@ data Token = LetterOp Char | ConcatOp | ChoiceOp | StarOp | EmptyOp | LambdaOp
             | LPar | RPar  | REG Regex
             deriving Show
 
-parser :: String -> [Regex]
+parser :: String -> Regex
 parser s = case sr [] (lexer s) of
-    [REG e] -> [e]
-    ts -> error ("Parse error: " ++ show ts) 
+    [REG r] -> r
+    e -> error ("Parse error: " ++ show e) 
+
 
 sr :: [Token] -> [Token] -> [Token]
 --letter
