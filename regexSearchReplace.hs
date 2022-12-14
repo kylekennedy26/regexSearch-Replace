@@ -61,9 +61,8 @@ matchPrefix (Letter ch) [] = []
 matchPrefix (Letter ch) (strChar:rst) = [rst | ch == strChar]
 matchPrefix (Choice r1 r2) str = matchPrefix r1 str ++ matchPrefix r2 str
 matchPrefix (Concat r1 r2) str = [ s3 | (s1, s2, s3) <- splitThree str, match r1 s1 && match r2 s2 ]
-matchPrefix (Star r) str = [str] ++ [ s3 | (s1, s2, s3) <- splitThree str, match r s1 && match (Star r) s2]
+matchPrefix (Star r) str = str : [ s3 | (s1, s2, s3) <- splitThree str, match r s1 && match (Star r) s2]
 --matchPrefix (Star r) str = matchPrefix (Choice Lambda (Concat r (Star r))) str
-
 --helper functions for match prefix
 --generate all the possible tuples for s1 ++ s2 ++ s3 = str.
 --Repeated characters are treated as different. (Hello generates Hel twice since two ls.)
@@ -89,9 +88,9 @@ sr (REG r2 : ChoiceOp : REG r1 : s) ts = sr (REG (Choice r1 r2) : s) ts
 --star
 sr (StarOp : REG r : s) ts = sr (REG (Star r) : s) ts
 --lambda
-sr (LambdaOp : s) ts = sr (REG (Lambda) : s) ts
+sr (LambdaOp : s) ts = sr (REG Lambda : s) ts
 --empty
-sr (EmptyOp : s) ts = sr (REG (Empty) : s) ts
+sr (EmptyOp : s) ts = sr (REG Empty : s) ts
 --pars
 sr (RPar : REG r : LPar : s) ts = sr (REG r : s) ts
 --basecase
