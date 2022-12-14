@@ -43,3 +43,13 @@ Main Tests:
     test.txt
     h;e;l;l;o
     greetings
+    = replace made
+
+    test.txt
+    h;e;l;l;o
+    greetings
+    = not found
+    
+Notes:
+- only able to replace the first word in a string
+- hardest part was the logical core of matchPrefix
