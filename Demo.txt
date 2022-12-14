@@ -1,0 +1,45 @@
+
+this is where we started, trying to match a regular expression to a string:
+Match Tests:
+    match (Letter 'a') "a"
+    = True
+
+matches a string with a regex pattern, removing the part that was matched from the string and returning everything remaining:
+MatchPrefix Tests:
+    matchPrefix (Letter 'h') "hello"        
+    = ["ello"]
+
+    matchPrefix (Letter 'h') "bye"          
+    = []
+
+    matchPrefix (Concat (Letter 'h') (Letter 'e'))) "hello" 
+    = ["llo"]
+
+    matchPrefix (Concat (Concat (Letter 'h') (Letter 'e')) (Star (Letter 'l'))) "hello" 
+    = ["llo","lo","o"]
+
+the parser is used to create a pattern out of the string that we are searching for:
+Parser Tests:
+    let x = parser "h;e;l;l;o"
+    x
+    = Concat (Concat (Concat (Concat (Letter 'h') (Letter 'e')) (Letter 'l')) (Letter 'l')) (Letter 'o')
+
+    parser "a | b"
+    = Choice (Letter 'a') (Letter 'b')
+
+search uses the previous functions to take a regular expression and returns True if the string was matched:
+Search Tests:
+    search x "hello there"
+    = True
+
+the replace, doing its job:
+Replace Tests:
+    replace x "hello there kyle" "hi"
+    = "hi there"
+
+everything pieced together:
+Main Tests:
+    main
+    test.txt
+    h;e;l;l;o
+    greetings
