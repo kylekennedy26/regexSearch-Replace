@@ -9,7 +9,7 @@ data Regex = Letter Char | Concat Regex Regex | Choice Regex Regex |
 main :: IO ()
 main = do
     --prompt user for input
-    putStrLn "Welcome to RegEx Search and Replace. Enter a filename:"
+    putStrLn "To perform Regex Search & Replace,\nEnter a filename:"
     filename <- getLine
     putStrLn "Enter the string you want to find/match:"
     matchStr <- getLine
@@ -20,6 +20,11 @@ main = do
     --if fileContents are the same then say so
     if runProgram fileContents matchStr replaceStr == fileContents then putStrLn "No matches found to replace." else putStrLn ("Sucessfully replaced " ++ matchStr ++ " with " ++ replaceStr ++ " in " ++ filename)
     writeFile filename (runProgram fileContents matchStr replaceStr)
+    --loop
+    putStrLn "Would you like to perform another Regex Search & Replace? (y/n)"
+    q <- getLine
+    if q == "yes" || q == "y" then main else putStrLn "\n"
+
 
 --takes as input 3 strings, and a string representing the filecontents as 1 huge string.
 --string to match, turned into a regex pattern
@@ -101,6 +106,7 @@ sr s [] = s
 lexer :: String -> [Token]
 --basecase
 lexer "" = []
+lexer (s : ss) | isSpace s = lexer ss
 --concat
 lexer (';':  ss) = ConcatOp : lexer ss
 --choice
