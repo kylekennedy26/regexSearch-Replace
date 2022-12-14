@@ -17,9 +17,9 @@ main = do
     replaceStr <- getLine
     --read file
     fileContents <- readFile filename
-    --do stuff
-    writeFile "output.txt" (runProgram fileContents matchStr replaceStr)
-    putStrLn ("Sucessfully replaced " ++ matchStr ++ " with " ++ replaceStr ++ " in " ++ filename)
+    --if fileContents are the same then say so
+    if runProgram fileContents matchStr replaceStr == fileContents then putStrLn "No matches found to replace." else putStrLn ("Sucessfully replaced " ++ matchStr ++ " with " ++ replaceStr ++ " in " ++ filename)
+    writeFile filename (runProgram fileContents matchStr replaceStr)
 
 --takes as input 3 strings, and a string representing the filecontents as 1 huge string.
 --string to match, turned into a regex pattern
@@ -100,11 +100,8 @@ sr s [] = s
 
 
 lexer :: String -> [Token]
+--basecase
 lexer "" = []
-lexer (s : ss) | isSpace s = lexer ss
-lexer (s : ss) | s =='"' = lexer ss
---letter
-lexer (s : ss) | isLetter s = LetterOp s : lexer ss
 --concat
 lexer (';':  ss) = ConcatOp : lexer ss
 --choice
@@ -116,5 +113,5 @@ lexer ('\\': ss) = LambdaOp : lexer ss
 --punctuation
 lexer ('(': ss) = LPar : lexer ss
 lexer (')': ss) = RPar : lexer ss
---basecase
-lexer s = error("Lexical error: " ++ s)
+--letter
+lexer (s : ss) = LetterOp s : lexer ss
