@@ -26,7 +26,7 @@ main = do
 --string that will replace
 runProgram :: String -> String -> String -> String
 runProgram file matchStr replaceStr = if search x file then replace x file replaceStr else file
-                                        where x = genPattern matchStr
+                                        where x = genPattern (intersperse ';' matchStr)
 
 search :: Regex -> String -> Bool
 search reg file = not (null (matchPrefix reg file))
